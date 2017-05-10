@@ -1,0 +1,73 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.2/vue.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <input type="range" v-model="value">
+    {{ value }}
+</div>
+
+<canvas id="canvas" width="1000" height="1000"></canvas>
+<script>
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            value: 100,
+            flag : false
+        },
+        created() {
+            var canvas = document.getElementById('canvas')
+
+            canvas.onmousedown = function () {
+                this.flag = true;
+            }
+            canvas.onmouseup = function () {
+                this.flag = false;
+            }
+
+            var _me = this
+            canvas.onmousemove = function (e) {
+                if (this.flag) {
+                    _me.draw(e)
+                }
+            }
+        },
+        methods : {
+            draw: function(e){
+
+                if (!canvas || !canvas.getContext) {
+                    return false;
+                }
+
+                var x = e.clientX;
+                var y = e.clientY;
+                var size = function () {
+                    return Math.random() * app.value + Math.random() * -app.value
+                }
+
+
+                var ctx = canvas.getContext('2d');
+                ctx.beginPath()
+                ctx.moveTo(x + size(), y + size())
+                ctx.lineTo(x + size(), y + size())
+                ctx.lineTo(x + size(), y + size())
+                ctx.closePath()
+
+
+                var r = Math.floor(Math.random() * 256)
+                var g = Math.floor(Math.random() * 256)
+                var b = Math.floor(Math.random() * 256)
+                var a = Math.floor(Math.random() * 10) / 10
+
+                ctx.fillStyle = "rgba(" + r + ',' + g + ',' + b + ',' + a + ")";
+                ctx.fill()
+
+            }
+        }
+    })
+</script>
+</body>
+</html>
